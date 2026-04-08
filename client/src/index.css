@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Design Token CSS Variables ──────────────────────────────── */
+/* Source: docs/design-tokens.md — Dark theme (default and only)  */
+
+:root {
+  /* Base Colors */
+  --color-primary: #6366f1;
+  --color-secondary: #8b5cf6;
+  --color-background: #09090b;
+  --color-surface: #18181b;
+  --color-surface-alt: #27272a;
+  --color-border: #3f3f46;
+  --color-text: #fafafa;
+  --color-text-muted: #a1a1aa;
+  --color-text-dim: #71717a;
+
+  /* Semantic Colors */
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #3b82f6;
+
+  /* Priority Colors */
+  --color-priority-urgent: #ef4444;
+  --color-priority-high: #f97316;
+  --color-priority-medium: #f59e0b;
+  --color-priority-low: #3b82f6;
+  --color-priority-none: #71717a;
+
+  /* Status Colors */
+  --color-status-backlog: #71717a;
+  --color-status-todo: #3b82f6;
+  --color-status-in-progress: #f59e0b;
+  --color-status-in-review: #8b5cf6;
+  --color-status-done: #22c55e;
+  --color-status-cancelled: #ef4444;
+}
+
+/* ─── Base Styles ─────────────────────────────────────────────── */
+
+body {
+  margin: 0;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

@@ -1,0 +1,14 @@
+{
+  "name": "worknest",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Multi-tenant SaaS project management tool",
+  "workspaces": [
+    "shared",
+    "server",
+    "client"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
