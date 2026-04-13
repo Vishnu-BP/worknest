@@ -2,39 +2,20 @@
  * @file index.ts — Express server entry point
  * @module server
  *
- * Bootstraps the Express application and starts listening on the configured port.
- * Imports env config first to validate all environment variables at startup.
- * This file only handles server startup — app configuration lives in app.ts (Phase 3).
+ * Imports the configured Express app and starts the HTTP server.
+ * This file only handles startup — all app configuration (middleware,
+ * routes, error handling) lives in app.ts for testability with Supertest.
  *
- * @dependencies express, @worknest/shared, server/src/config
- * @related server/src/app.ts — Express app setup (created in Phase 3)
+ * @dependencies server/src/app, server/src/config, server/src/utils
+ * @related server/src/app.ts — Express app configuration
  */
 
-import express from 'express'
+import { app } from './app'
+import { env } from './core/config'
+import { createLogger } from './core/utils'
 
-import { TASK_STATUS } from '@worknest/shared'
-
-import { env } from './config'
-
-// ─── App Setup ─────────────────────────────────────────────────
-
-const app = express()
-
-app.use(express.json())
-
-// ─── Health Check ──────────────────────────────────────────────
-
-app.get('/', (_req, res) => {
-  res.json({
-    data: {
-      message: 'WorkNest API',
-      statuses: Object.values(TASK_STATUS),
-    },
-  })
-})
-
-// ─── Start Server ──────────────────────────────────────────────
+const log = createLogger('API')
 
 app.listen(env.PORT, () => {
-  console.log(`[SERVER] WorkNest API running on port ${env.PORT}`)
+  log.info(`WorkNest API running on port ${env.PORT}`)
 })

@@ -5,6 +5,7 @@ export { createProjectSchema, updateProjectSchema } from './project.validators'
 export { createTaskSchema, updateTaskSchema, moveTaskSchema } from './task.validators'
 export { createCommentSchema, updateCommentSchema } from './comment.validators'
 export { createLabelSchema, updateLabelSchema } from './label.validators'
+export { updateMemberRoleSchema } from './member.validators'
 export { createInvitationSchema } from './invitation.validators'
 
 export type { PaginationParams } from './common.validators'
@@ -14,4 +15,5 @@ export type { CreateProjectSchema, UpdateProjectSchema } from './project.validat
 export type { CreateTaskSchema, UpdateTaskSchema, MoveTaskSchema } from './task.validators'
 export type { CreateCommentSchema, UpdateCommentSchema } from './comment.validators'
 export type { CreateLabelSchema, UpdateLabelSchema } from './label.validators'
+export type { UpdateMemberRoleSchema } from './member.validators'
 export type { CreateInvitationSchema } from './invitation.validators'

@@ -30,29 +30,6 @@ cd server && npm run test         # Vitest + Supertest (API)
 npm run test:e2e                  # Playwright (E2E)
 ```
 
-## Project Structure
-
-```
-worknest/
-├── client/src/                # React frontend (Vercel)
-│   ├── pages/                 # Route-level components
-│   ├── components/            # UI (ui/, common/, board/, workspace/, task/, member/, project/)
-│   ├── hooks/                 # TanStack Query wrappers — ALL API calls go through here
-│   ├── stores/                # Zustand stores (uiStore, filterStore, authStore)
-│   ├── lib/                   # api.ts, supabase.ts, logger.ts, utils.ts
-│   └── config/                # Constants, routes, feature flags
-├── server/src/                # Express backend (Render)
-│   ├── routes/                # HTTP handlers — parse request, call service, send response
-│   ├── services/              # Business logic — NO Express/HTTP awareness
-│   ├── middleware/             # auth, workspace, rbac, rateLimit, errorHandler
-│   ├── db/                    # Drizzle schema (one file per table), migrations
-│   ├── validators/            # Zod request schemas
-│   └── utils/                 # Helpers (logger, token gen, slug, position calc)
-├── shared/                    # Types + Zod schemas used by both client & server
-│   ├── types/                 # Entity types, enums, DTOs
-│   └── validators/            # Shared Zod schemas (form + API validation)
-└── tasks/todo.md              # Current task tracker + completed work log
-```
 
 ## Tech Stack — USE ONLY THESE
 
@@ -175,6 +152,11 @@ server/services/   ← imported by → routes/ ONLY
 Drag-and-drop moves, column reordering, inline title edits. Everything else uses normal loading states.
 
 ### Design Principles
+- **Write code like a senior engineer. Every file must be:**
+    - **Understandable** — someone new should read it and get it without asking anyone
+    - **Scalable** — easy to extend without modifying existing code
+    - **Maintainable** — clear structure, proper comments, no magic numbers
+    - **Properly commented** — explain WHY, not WHAT (the code shows what)
 
 - **Single Responsibility** — one file, one job. A route doesn't validate, query, and format. Each layer does one thing.
 - **Separation of Concerns** — routes handle HTTP, services handle logic, Drizzle handles data. Never mix layers.
@@ -182,8 +164,7 @@ Drag-and-drop moves, column reordering, inline title edits. Everything else uses
 - **Fail Gracefully** — if a non-critical service breaks, the app continues with reduced functionality, never crashes.
 - **Composition over Inheritance** — small components composed together, not deep class hierarchies.
 - **DRY (Don't Repeat Yourself)** — shared types in `/shared`, shared validation via Zod, barrel exports for reuse.
-- **Least Privilege** — users get minimum permissions needed. Viewers can't write. Members can't manage. Default to deny.
-
+-
 ## Coding Standards — Apply to EVERY file
 
 ### File Headers
