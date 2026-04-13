@@ -28,9 +28,10 @@ export async function cleanupOnSignOut(): Promise<void> {
   // Import dynamically to avoid circular dependencies
   const { useAuthStore } = await import('../stores/authStore')
   const { useUIStore } = await import('../stores/uiStore')
+  const { useFilterStore } = await import('../stores/filterStore')
   useAuthStore.getState().reset()
   useUIStore.getState().reset()
-  // Future stores (filterStore) added here as they're created
+  useFilterStore.getState().reset()
 
   // 2. Clear all cached server data
   queryClient.clear()

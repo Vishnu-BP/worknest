@@ -1,34 +1,45 @@
 /**
- * @file ProjectBoard.tsx — Project board page (Kanban placeholder)
+ * @file ProjectBoard.tsx — Project board page (Kanban board)
  * @module client/features/project/pages
  *
  * Route: /w/:slug/projects/:projectId/board
- * Phase 7: Shows project name + placeholder for Kanban board.
- * Phase 9: Will render full KanbanView with drag-and-drop.
+ * Fetches the project, then renders BoardHeader (with filter toggle)
+ * and KanbanView (the full drag-and-drop board). Filter bar is
+ * shown/hidden via local state toggle.
  *
- * @dependencies react-router-dom, lucide-react
- * @related client/src/features/project/hooks/useProject.ts
+ * This is a smart page — it fetches data and passes it as props
+ * to dumb components (per CLAUDE.md design principles).
+ *
+ * @dependencies react-router-dom
+ * @related client/src/features/task/ — task components and hooks
  */
 
+import { useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Kanban } from 'lucide-react'
 
 import { Skeleton } from '@core/components/ui/skeleton'
-import { EmptyState } from '@core/components/common/EmptyState'
 
 import { useProject } from '../hooks/useProject'
+import { KanbanView, BoardHeader, BoardFilters } from '@features/task'
 
 // ─── Component ─────────────────────────────────────────────────
 
 export function ProjectBoard(): JSX.Element {
   const { slug, projectId } = useParams<{ slug: string; projectId: string }>()
   const { data: project, isLoading } = useProject(slug, projectId)
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false)
+
+  // ─── Loading ───────────────────────────────────────────────
 
   if (isLoading) {
     return (
       <div className="space-y-4">
-        <Skeleton className="h-8 w-48" />
-        <Skeleton className="h-64 w-full" />
+        <Skeleton className="h-8 w-64" />
+        <div className="flex gap-4">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-96 w-72 shrink-0" />
+          ))}
+        </div>
       </div>
     )
   }
@@ -37,23 +48,19 @@ export function ProjectBoard(): JSX.Element {
     return <p className="text-text-muted">Project not found.</p>
   }
 
+  // ─── Board ─────────────────────────────────────────────────
+
   return (
     <div>
-      <div className="mb-6 flex items-center gap-3">
-        <div
-          className="h-4 w-4 rounded-full"
-          style={{ backgroundColor: project.color }}
-          aria-hidden="true"
-        />
-        <h2 className="text-xl font-semibold text-text">{project.name}</h2>
-        <span className="text-sm text-text-dim">({project.key})</span>
-      </div>
-
-      <EmptyState
-        icon={Kanban}
-        title="Kanban board coming in Phase 9"
-        description="Drag-and-drop task columns with fractional indexing, optimistic updates, and real-time sync will be built here."
+      <BoardHeader
+        project={project}
+        isFiltersOpen={isFiltersOpen}
+        onToggleFilters={() => setIsFiltersOpen(!isFiltersOpen)}
       />
+
+      {isFiltersOpen && <BoardFilters />}
+
+      <KanbanView project={project} slug={slug!} />
     </div>
   )
 }
