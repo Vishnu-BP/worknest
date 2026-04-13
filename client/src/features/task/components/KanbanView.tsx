@@ -53,9 +53,10 @@ const log = createLogger('BOARD')
 interface KanbanViewProps {
   project: Project
   slug: string
+  onTaskClick?: (taskId: string) => void
 }
 
-export function KanbanView({ project, slug }: KanbanViewProps): JSX.Element {
+export function KanbanView({ project, slug, onTaskClick }: KanbanViewProps): JSX.Element {
   const { data: tasks, isLoading } = useTasks(slug, project.id)
   const moveTask = useMoveTask(slug, project.id)
   const [activeTask, setActiveTask] = useState<Task | null>(null)
@@ -205,6 +206,7 @@ export function KanbanView({ project, slug }: KanbanViewProps): JSX.Element {
             projectKey={project.key}
             slug={slug}
             projectId={project.id}
+            onTaskClick={onTaskClick}
           />
         ))}
       </div>

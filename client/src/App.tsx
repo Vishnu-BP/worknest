@@ -43,6 +43,7 @@ import {
 } from '@features/workspace'
 import { Members } from '@features/member'
 import { ProjectBoard, CreateProjectDialog } from '@features/project'
+import { Activity } from '@features/activity'
 
 // ─── App ───────────────────────────────────────────────────────
 
@@ -91,6 +92,7 @@ function ProtectedRoutes(): JSX.Element {
         <Route path="members" element={<Members />} />
         <Route path="settings" element={<WorkspaceSettingsPage />} />
         <Route path="projects/:projectId/board" element={<ProjectBoard />} />
+        <Route path="activity" element={<Activity />} />
       </Route>
 
       {/* Catch unmatched → home */}

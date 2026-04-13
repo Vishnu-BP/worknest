@@ -34,6 +34,7 @@ interface KanbanColumnProps {
   projectKey: string
   slug: string
   projectId: string
+  onTaskClick?: (taskId: string) => void
 }
 
 // ─── Column Component ──────────────────────────────────────────
@@ -44,6 +45,7 @@ export function KanbanColumn({
   projectKey,
   slug,
   projectId,
+  onTaskClick,
 }: KanbanColumnProps): JSX.Element {
   const taskIds = tasks.map((t) => t.id)
 
@@ -76,6 +78,7 @@ export function KanbanColumn({
               key={task.id}
               task={task}
               projectKey={projectKey}
+              onTaskClick={onTaskClick}
             />
           ))}
         </SortableContext>
@@ -99,9 +102,11 @@ export function KanbanColumn({
 function SortableTaskCard({
   task,
   projectKey,
+  onTaskClick,
 }: {
   task: Task
   projectKey: string
+  onTaskClick?: (taskId: string) => void
 }): JSX.Element {
   const {
     attributes,
@@ -120,13 +125,21 @@ function SortableTaskCard({
     transition,
   }
 
+  // Click opens detail modal (only if not dragging)
+  const handleClick = (): void => {
+    if (!isDragging && onTaskClick) {
+      onTaskClick(task.id)
+    }
+  }
+
   return (
     <div
       ref={setNodeRef}
       style={style}
       {...attributes}
       {...listeners}
-      className={cn(isDragging && 'opacity-40')}
+      onClick={handleClick}
+      className={cn(isDragging && 'opacity-40', 'cursor-pointer')}
     >
       <TaskCard task={task} projectKey={projectKey} isDragging={isDragging} />
     </div>

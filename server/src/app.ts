@@ -34,6 +34,10 @@ import { workspaceRouter } from './modules/workspace'
 import { memberRouter } from './modules/member'
 import { projectRouter } from './modules/project'
 import { taskRouter } from './modules/task'
+import { commentRouter } from './modules/comment'
+import { labelRouter } from './modules/label'
+import { taskLabelRouter } from './modules/task-label'
+import { activityRouter } from './modules/activity'
 
 // ─── Create App ────────────────────────────────────────────────
 
@@ -60,6 +64,10 @@ app.use('/api', workspaceRouter)
 app.use('/api', memberRouter)
 app.use('/api', projectRouter)
 app.use('/api', taskRouter)
+app.use('/api', commentRouter)
+app.use('/api', labelRouter)
+app.use('/api', taskLabelRouter)
+app.use('/api', activityRouter)
 
 // ─── 404 Catch-All ─────────────────────────────────────────────
 
