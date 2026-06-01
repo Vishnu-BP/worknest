@@ -9,4 +9,11 @@ export { labels } from './labels.schema'
 export { taskLabels } from './task-labels.schema'
 export { comments } from './comments.schema'
 export { activityLog } from './activity-log.schema'
+export {
+  chatChannels,
+  chatChannelMembers,
+  chatMessages,
+  chatReactions,
+  chatAttachments,
+} from './chat.schema'
 export * from './relations'

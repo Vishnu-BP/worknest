@@ -139,7 +139,10 @@ function SortableTaskCard({
       {...attributes}
       {...listeners}
       onClick={handleClick}
-      className={cn(isDragging && 'opacity-40', 'cursor-pointer')}
+      className={cn(
+        'touch-none',
+        isDragging ? 'cursor-grabbing opacity-40' : 'cursor-grab',
+      )}
     >
       <TaskCard task={task} projectKey={projectKey} isDragging={isDragging} />
     </div>

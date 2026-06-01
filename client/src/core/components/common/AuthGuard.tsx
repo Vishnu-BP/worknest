@@ -2,50 +2,35 @@
  * @file AuthGuard.tsx — Protected route wrapper
  * @module client/core/components/common
  *
- * Wraps protected routes in React Router. Checks for a valid Supabase
- * session on mount — if authenticated, renders children. If not,
- * redirects to the login page. Shows a loading state while the
- * session check is in progress to prevent flash of login page.
+ * Wraps protected routes in React Router. Reads auth state from the
+ * Zustand store (single source of truth, owned by useAuth):
+ *   - isAuthLoading: true  → render a spinner (session still being resolved)
+ *   - isAuthenticated: false → redirect to /auth, preserving the target URL
+ *   - else → render children
  *
- * @dependencies react, react-router-dom, @supabase/supabase-js
- * @related client/src/App.tsx — wraps protected route group with this
+ * This component does NOT call supabase.auth.getSession() itself —
+ * useAuth owns that, which removes the race condition where AuthGuard
+ * could redirect a logged-in user before the store was populated.
+ *
+ * @dependencies react-router-dom, client/src/core/stores
+ * @related client/src/features/auth/hooks/useAuth.ts — populates the store
  */
 
-import { useEffect, useState } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 
 import { ROUTES } from '@core/config'
-import { supabase } from '@core/lib'
 import { useAuthStore } from '@core/stores'
 
 // ─── Component ─────────────────────────────────────────────────
 
 export function AuthGuard({ children }: { children: React.ReactNode }): JSX.Element {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
-  const [isLoading, setIsLoading] = useState(true)
+  const isAuthLoading = useAuthStore((s) => s.isAuthLoading)
   const location = useLocation()
 
-  useEffect(() => {
-    const checkSession = async (): Promise<void> => {
-      const { data: { session } } = await supabase.auth.getSession()
+  // ─── Resolving Session → Spinner ───────────────────────────
 
-      // If no Supabase session and store says not authenticated, we're done
-      if (!session && !isAuthenticated) {
-        setIsLoading(false)
-        return
-      }
-
-      // Session exists — useAuth hook will sync the store
-      // Give it a moment to populate before rendering
-      setIsLoading(false)
-    }
-
-    checkSession()
-  }, [isAuthenticated])
-
-  // ─── Loading State ─────────────────────────────────────────
-
-  if (isLoading) {
+  if (isAuthLoading) {
     return (
       <div className="flex h-screen items-center justify-center bg-background">
         <div className="text-text-muted text-sm">Loading...</div>
@@ -53,11 +38,11 @@ export function AuthGuard({ children }: { children: React.ReactNode }): JSX.Elem
     )
   }
 
-  // ─── Not Authenticated → Redirect to Login ─────────────────
+  // ─── Not Authenticated → Redirect to Auth ──────────────────
 
   if (!isAuthenticated) {
-    // Preserve the attempted URL so we can redirect back after login
-    return <Navigate to={ROUTES.LOGIN} state={{ from: location }} replace />
+    // Preserve the attempted URL so we can redirect back after sign-in
+    return <Navigate to={ROUTES.AUTH} state={{ from: location }} replace />
   }
 
   // ─── Authenticated → Render Protected Content ──────────────

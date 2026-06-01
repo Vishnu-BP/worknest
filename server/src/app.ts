@@ -38,6 +38,9 @@ import { commentRouter } from './modules/comment'
 import { labelRouter } from './modules/label'
 import { taskLabelRouter } from './modules/task-label'
 import { activityRouter } from './modules/activity'
+import { invitationRouter } from './modules/invitation'
+import { chatChannelRouter } from './modules/chat-channel'
+import { chatMessageRouter } from './modules/chat-message'
 
 // ─── Create App ────────────────────────────────────────────────
 
@@ -68,6 +71,9 @@ app.use('/api', commentRouter)
 app.use('/api', labelRouter)
 app.use('/api', taskLabelRouter)
 app.use('/api', activityRouter)
+app.use('/api', invitationRouter)
+app.use('/api', chatChannelRouter)
+app.use('/api', chatMessageRouter)
 
 // ─── 404 Catch-All ─────────────────────────────────────────────
 

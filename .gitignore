@@ -28,3 +28,7 @@ coverage/
 *.log
 npm-debug.log*
 .turbo/
+
+# Landing-page capture output (keep folder via .gitkeep, exclude artifacts)
+screenshots/**/*
+!screenshots/.gitkeep

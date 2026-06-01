@@ -34,6 +34,7 @@ export interface Task {
 export interface CreateTaskInput {
   readonly title: string
   readonly description?: string
+  readonly status?: TaskStatus
   readonly priority?: Priority
   readonly assignee_id?: string
   readonly due_date?: string

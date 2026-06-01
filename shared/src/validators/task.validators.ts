@@ -25,6 +25,7 @@ const priorityValues = Object.values(PRIORITY) as [string, ...string[]]
 export const createTaskSchema = z.object({
   title: z.string().min(1, 'Title is required').max(200, 'Title must be 200 characters or less'),
   description: z.string().max(5000, 'Description must be 5000 characters or less').optional(),
+  status: z.enum(taskStatusValues).default(TASK_STATUS.BACKLOG).optional(),
   priority: z.enum(priorityValues).default(PRIORITY.NONE).optional(),
   assignee_id: z.string().uuid('Must be a valid user ID').optional(),
   due_date: z.string().datetime({ message: 'Must be a valid ISO date' }).optional(),

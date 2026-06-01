@@ -1,3 +1,5 @@
 export { useAuthStore } from './authStore'
 export { useFilterStore } from './filterStore'
+export { useThemeStore } from './themeStore'
+export type { Theme } from './themeStore'
 export { useUIStore } from './uiStore'

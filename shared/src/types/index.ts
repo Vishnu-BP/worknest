@@ -7,5 +7,16 @@ export type { Project, CreateProjectInput, UpdateProjectInput } from './project.
 export type { Task, CreateTaskInput, UpdateTaskInput, MoveTaskInput } from './task.types'
 export type { Label, CreateLabelInput, UpdateLabelInput } from './label.types'
 export type { Comment, CreateCommentInput, UpdateCommentInput } from './comment.types'
+export type {
+  ChatChannel,
+  DMChannel,
+  CreateChannelInput,
+  CreateDMInput,
+  UpdateChannelInput,
+  ChatMessage,
+  MessageWithAuthor,
+  CreateMessageInput,
+  UpdateMessageInput,
+} from './chat.types'
 export type { ActivityLog } from './activity.types'
 export type { ApiSuccessResponse, ApiErrorResponse, PaginationMeta, PaginatedResponse } from './api.types'

@@ -12,12 +12,19 @@
 
 export const ROUTES = {
   // ─── Public ──────────────────────────────────────────
-  LOGIN: '/login',
-  SIGNUP: '/signup',
+  LANDING: '/',
+  AUTH: '/auth',
+  CONTACT: '/contact',
   INVITE_ACCEPT: '/invitations/accept',
 
   // ─── Protected ───────────────────────────────────────
-  HOME: '/',
+  /**
+   * Authenticated entry point. Renders `HomeRedirect` which forwards
+   * to last-visited workspace or `/onboarding` for new users.
+   * Distinct from `LANDING` so the public marketing page at `/` can
+   * coexist with the authed redirect flow.
+   */
+  HOME: '/app',
   ONBOARDING: '/onboarding',
 
   // ─── Workspace (dynamic) ─────────────────────────────
@@ -31,4 +38,8 @@ export const ROUTES = {
     `/w/${slug}/projects/${projectId}/board`,
   PROJECT_LIST: (slug: string, projectId: string) =>
     `/w/${slug}/projects/${projectId}/list`,
+  PROJECT_CHAT: (slug: string, projectId: string) =>
+    `/w/${slug}/projects/${projectId}/chat`,
+  PROJECT_CHAT_CHANNEL: (slug: string, projectId: string, channelId: string) =>
+    `/w/${slug}/projects/${projectId}/chat/${channelId}`,
 } as const

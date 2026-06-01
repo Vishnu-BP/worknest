@@ -8,27 +8,30 @@
 
 ```bash
 # Client (React + Vite)
-cd client && npm run dev          # Start dev server
-cd client && npm run build        # Production build
-cd client && npm run lint         # ESLint
-cd client && npm run typecheck    # TypeScript check
+cd client && npm run dev          # Start dev server (localhost:5173)
+cd client && npm run build        # Production build (tsc -b + vite build)
+cd client && npm run preview      # Serve the production build locally
+cd client && npm run typecheck    # TypeScript check (tsc --noEmit)
 
 # Server (Express)
-cd server && npm run dev          # Start with nodemon
-cd server && npm run build        # Compile TypeScript
-cd server && npm run lint         # ESLint
-cd server && npm run typecheck    # TypeScript check
+cd server && npm run dev          # Start with nodemon (localhost:3001)
+cd server && npm run build        # Compile TypeScript to dist/
+cd server && npm start            # Run compiled dist/index.js (production)
+cd server && npm run typecheck    # TypeScript check (tsc --noEmit)
 
 # Database
-cd server && npm run db:generate  # Generate Drizzle migrations
-cd server && npm run db:migrate   # Apply migrations
-cd server && npm run db:seed      # Seed test data
+cd server && npm run db:generate  # Generate Drizzle migration from schema diff
+cd server && npm run db:migrate   # Apply migrations (uses DIRECT_DATABASE_URL)
+cd server && npm run db:seed      # Seed test data (tsx src/core/db/seed.ts)
 
-# Testing
+# Testing (no tests written yet — runnable, just empty)
 cd client && npm run test         # Vitest (unit)
 cd server && npm run test         # Vitest + Supertest (API)
-npm run test:e2e                  # Playwright (E2E)
 ```
+
+> **Not yet wired up** (install these when the testing/lint phase starts):
+> - `npm run lint` — ESLint isn't installed in either workspace. Remove the `lint` script or add `eslint` + config before using.
+> - `npm run test:e2e` — Playwright isn't installed and no root script exists. Defer to Phase 12 (testing).
 
 
 ## Tech Stack — USE ONLY THESE

@@ -103,6 +103,11 @@ export const ACTIVITY_ACTION = {
   PROJECT_ARCHIVED: 'project_archived',
   WORKSPACE_CREATED: 'workspace_created',
   WORKSPACE_UPDATED: 'workspace_updated',
+  CHANNEL_CREATED: 'channel_created',
+  CHANNEL_DELETED: 'channel_deleted',
+  MESSAGE_POSTED: 'message_posted',
+  MESSAGE_EDITED: 'message_edited',
+  MESSAGE_DELETED: 'message_deleted',
 } as const
 
 export type ActivityAction =
@@ -118,6 +123,8 @@ export const ENTITY_TYPE = {
   INVITATION: 'invitation',
   WORKSPACE: 'workspace',
   LABEL: 'label',
+  CHAT_CHANNEL: 'chat_channel',
+  CHAT_MESSAGE: 'chat_message',
 } as const
 
 export type EntityType = (typeof ENTITY_TYPE)[keyof typeof ENTITY_TYPE]

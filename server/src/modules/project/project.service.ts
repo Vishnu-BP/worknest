@@ -18,6 +18,8 @@ import { db } from '../../core/db'
 import { projects } from '../../core/db/schema'
 import { conflict, createLogger, notFound } from '../../core/utils'
 
+import { createDefaultChannel } from '../chat-channel'
+
 import type { CreateProjectInput, Project, UpdateProjectInput } from '@worknest/shared'
 
 // ─── Logger ────────────────────────────────────────────────────
@@ -53,6 +55,18 @@ export async function create(
 
     if (!project) {
       throw new Error('Failed to create project')
+    }
+
+    // Auto-provision the default #general chat channel for this project.
+    // Failure is logged but not fatal — the project still exists; users
+    // can create channels manually if this fails.
+    try {
+      await createDefaultChannel(workspaceId, project.id, userId)
+    } catch (channelError) {
+      log.error('Failed to create default #general channel', {
+        projectId: project.id,
+        error: channelError,
+      })
     }
 
     log.info('Project created', { id: project.id, key: project.key })

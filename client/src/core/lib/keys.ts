@@ -66,3 +66,21 @@ export const activityKeys = {
   all: ['activity'] as const,
   byWorkspace: (slug: string) => [...activityKeys.all, slug] as const,
 }
+
+// ─── Invitation Keys (Phase 11) ───────────────────────────────
+
+export const invitationKeys = {
+  all: ['invitations'] as const,
+  byWorkspace: (slug: string) => [...invitationKeys.all, slug] as const,
+}
+
+// ─── Chat Keys ────────────────────────────────────────────────
+
+export const chatKeys = {
+  all: ['chat'] as const,
+  channelsByProject: (projectId: string) =>
+    [...chatKeys.all, 'channels', 'project', projectId] as const,
+  dms: (slug: string) => [...chatKeys.all, 'dms', slug] as const,
+  messagesByChannel: (channelId: string) =>
+    [...chatKeys.all, 'messages', channelId] as const,
+}

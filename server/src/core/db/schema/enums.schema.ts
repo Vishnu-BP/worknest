@@ -59,6 +59,11 @@ export const activityActionEnum = pgEnum('activity_action_enum', [
   'project_archived',
   'workspace_created',
   'workspace_updated',
+  'channel_created',
+  'channel_deleted',
+  'message_posted',
+  'message_edited',
+  'message_deleted',
 ])
 
 export const entityTypeEnum = pgEnum('entity_type_enum', [
@@ -69,4 +74,6 @@ export const entityTypeEnum = pgEnum('entity_type_enum', [
   'invitation',
   'workspace',
   'label',
+  'chat_channel',
+  'chat_message',
 ])

@@ -29,7 +29,7 @@ interface TaskQuickCreateProps {
   status: TaskStatus
 }
 
-export function TaskQuickCreate({ slug, projectId, status: _status }: TaskQuickCreateProps): JSX.Element {
+export function TaskQuickCreate({ slug, projectId, status }: TaskQuickCreateProps): JSX.Element {
   const [isOpen, setIsOpen] = useState(false)
   const [title, setTitle] = useState('')
   const createTask = useCreateTask(slug, projectId)
@@ -38,7 +38,7 @@ export function TaskQuickCreate({ slug, projectId, status: _status }: TaskQuickC
     const trimmed = title.trim()
     if (!trimmed) return
 
-    await createTask.mutateAsync({ title: trimmed })
+    await createTask.mutateAsync({ title: trimmed, status })
     setTitle('')
     // Keep input open for rapid task creation
   }

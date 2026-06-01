@@ -4,6 +4,13 @@ export { createWorkspaceSchema, updateWorkspaceSchema } from './workspace.valida
 export { createProjectSchema, updateProjectSchema } from './project.validators'
 export { createTaskSchema, updateTaskSchema, moveTaskSchema } from './task.validators'
 export { createCommentSchema, updateCommentSchema } from './comment.validators'
+export {
+  createChannelSchema,
+  updateChannelSchema,
+  createDMSchema,
+  createMessageSchema,
+  updateMessageSchema,
+} from './chat.validators'
 export { createLabelSchema, updateLabelSchema } from './label.validators'
 export { updateMemberRoleSchema } from './member.validators'
 export { createInvitationSchema } from './invitation.validators'
@@ -14,6 +21,13 @@ export type { CreateWorkspaceSchema, UpdateWorkspaceSchema } from './workspace.v
 export type { CreateProjectSchema, UpdateProjectSchema } from './project.validators'
 export type { CreateTaskSchema, UpdateTaskSchema, MoveTaskSchema } from './task.validators'
 export type { CreateCommentSchema, UpdateCommentSchema } from './comment.validators'
+export type {
+  CreateChannelSchema,
+  UpdateChannelSchema,
+  CreateDMSchema,
+  CreateMessageSchema,
+  UpdateMessageSchema,
+} from './chat.validators'
 export type { CreateLabelSchema, UpdateLabelSchema } from './label.validators'
 export type { UpdateMemberRoleSchema } from './member.validators'
 export type { CreateInvitationSchema } from './invitation.validators'

@@ -28,20 +28,38 @@ interface AuthState {
   currentUser: User | null
   /** Convenience boolean derived from currentUser presence */
   isAuthenticated: boolean
+  /**
+   * True while useAuth is resolving the initial session / syncing the
+   * profile after SIGNED_IN. AuthGuard reads this to hold a spinner
+   * instead of bouncing to /auth during the brief gap before the
+   * store is populated.
+   */
+  isAuthLoading: boolean
 }
 
 interface AuthActions {
   /** Set the current user after successful authentication */
   setUser: (user: User) => void
+  /** Flip the loading flag — owned by useAuth */
+  setAuthLoading: (loading: boolean) => void
   /** Clear all auth state — called during sign-out cleanup */
   reset: () => void
 }
 
 // ─── Initial State ─────────────────────────────────────────────
 
+// App boot: we haven't checked the session yet, so we're "loading"
 const initialState: AuthState = {
   currentUser: null,
   isAuthenticated: false,
+  isAuthLoading: true,
+}
+
+// Signed-out state: checked and confirmed not authenticated
+const signedOutState: AuthState = {
+  currentUser: null,
+  isAuthenticated: false,
+  isAuthLoading: false,
 }
 
 // ─── Store ─────────────────────────────────────────────────────
@@ -55,5 +73,7 @@ export const useAuthStore = create<AuthState & AuthActions>()((set) => ({
       isAuthenticated: true,
     }),
 
-  reset: () => set(initialState),
+  setAuthLoading: (loading) => set({ isAuthLoading: loading }),
+
+  reset: () => set(signedOutState),
 }))

@@ -75,14 +75,15 @@ export async function create(
       .set({ task_counter: nextTaskNumber })
       .where(eq(projects.id, projectId))
 
-    // Calculate position (bottom of backlog column)
+    // Calculate position (bottom of the target column)
+    const targetStatus = input.status ?? 'backlog'
     const [lastTask] = await tx
       .select({ position: tasks.position })
       .from(tasks)
       .where(
         and(
           eq(tasks.project_id, projectId),
-          eq(tasks.status, 'backlog'),
+          eq(tasks.status, targetStatus),
         ),
       )
       .orderBy(sql`${tasks.position} DESC`)
@@ -99,7 +100,7 @@ export async function create(
         title: input.title,
         description: input.description ?? null,
         task_number: nextTaskNumber,
-        status: 'backlog',
+        status: targetStatus,
         priority: input.priority ?? 'none',
         position,
         assignee_id: input.assignee_id ?? null,

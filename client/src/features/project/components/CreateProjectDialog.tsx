@@ -15,7 +15,7 @@
 
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useParams } from 'react-router-dom'
+import { useMatch } from 'react-router-dom'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { createProjectSchema } from '@worknest/shared'
@@ -41,8 +41,13 @@ interface CreateProjectDialogProps {
 }
 
 export function CreateProjectDialog({ onSuccess }: CreateProjectDialogProps): JSX.Element {
-  const { slug } = useParams<{ slug: string }>()
-  const createProject = useCreateProject(slug!)
+  // The dialog renders at the app root (outside <Routes>), so `useParams`
+  // would see an empty params object. `useMatch` examines the current URL
+  // directly and returns the workspace slug regardless of where this
+  // component is mounted.
+  const match = useMatch('/w/:slug/*')
+  const slug = match?.params.slug
+  const createProject = useCreateProject(slug ?? '')
   const [hasEditedKey, setHasEditedKey] = useState(false)
 
   const {
@@ -74,6 +79,16 @@ export function CreateProjectDialog({ onSuccess }: CreateProjectDialogProps): JS
   const onSubmit = async (data: CreateProjectSchema): Promise<void> => {
     await createProject.mutateAsync(data)
     onSuccess?.()
+  }
+
+  // Safety net: if opened outside a workspace route, refuse rather than
+  // silently POSTing to /api/workspaces/undefined/projects.
+  if (!slug) {
+    return (
+      <p className="text-sm text-error">
+        Open a workspace before creating a project.
+      </p>
+    )
   }
 
   return (

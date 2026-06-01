@@ -3,10 +3,16 @@
 @tailwind utilities;
 
 /* ─── Design Token CSS Variables ──────────────────────────────── */
-/* Source: docs/design-tokens.md — Dark theme (default and only)  */
+/* Source: docs/design-tokens.md
+ * Default (`:root`) = dark theme. `:root.light` overrides the LAYOUT
+ * colors for light mode. Primary/secondary/semantic/priority/status
+ * colors are intentionally shared across both themes — they already
+ * contrast against both backgrounds, and status/priority colors carry
+ * meaning that shouldn't change by theme.
+ */
 
 :root {
-  /* Base Colors */
+  /* Base Colors — dark (default) */
   --color-primary: #6366f1;
   --color-secondary: #8b5cf6;
   --color-background: #09090b;
@@ -17,20 +23,20 @@
   --color-text-muted: #a1a1aa;
   --color-text-dim: #71717a;
 
-  /* Semantic Colors */
+  /* Semantic Colors (shared across themes) */
   --color-success: #22c55e;
   --color-warning: #f59e0b;
   --color-error: #ef4444;
   --color-info: #3b82f6;
 
-  /* Priority Colors */
+  /* Priority Colors (shared) */
   --color-priority-urgent: #ef4444;
   --color-priority-high: #f97316;
   --color-priority-medium: #f59e0b;
   --color-priority-low: #3b82f6;
   --color-priority-none: #71717a;
 
-  /* Status Colors */
+  /* Status Colors (shared) */
   --color-status-backlog: #71717a;
   --color-status-todo: #3b82f6;
   --color-status-in-progress: #f59e0b;
@@ -39,7 +45,33 @@
   --color-status-cancelled: #ef4444;
 }
 
+/* Light theme — triggered by `<html class="light">`. Only the layout
+ * colors flip; primary/secondary/semantic/priority/status are unchanged. */
+:root.light {
+  --color-background: #ffffff;
+  --color-surface: #f4f4f5;
+  --color-surface-alt: #e4e4e7;
+  --color-border: #d4d4d8;
+  --color-text: #09090b;
+  --color-text-muted: #52525b;
+  --color-text-dim: #71717a;
+}
+
 /* ─── Base Styles ─────────────────────────────────────────────── */
+
+html {
+  /* Smooth-scroll for anchor navigation (landing-page Features / Architecture
+     links, hero "See the architecture ↓"). Only affects programmatic /
+     anchor scrolls — does NOT interfere with dnd-kit auto-scroll during
+     drag, which uses scrollBy / scrollTop mutations. */
+  scroll-behavior: smooth;
+
+  /* Disable browser scroll anchoring. Without this, as React renders the
+     landing sections top-to-bottom the browser picks an "anchor element"
+     and keeps it in view by adjusting scrollTop — which caused refreshes
+     to land mid-page (kanban / palette area) instead of at the hero. */
+  overflow-anchor: none;
+}
 
 body {
   margin: 0;
@@ -48,4 +80,22 @@ body {
   font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Landing-page animations ─────────────────────────────────── */
+
+/* Brief side-to-side wiggle used on the Board demo to hint that
+ * a card is draggable. Plays a couple of times on mount, then
+ * the utility class is removed — no infinite looping. */
+@keyframes jiggle {
+  0%   { transform: translateX(0); }
+  20%  { transform: translateX(6px); }
+  40%  { transform: translateX(-6px); }
+  60%  { transform: translateX(3px); }
+  80%  { transform: translateX(-3px); }
+  100% { transform: translateX(0); }
+}
+
+.animate-drag-hint {
+  animation: jiggle 0.9s ease-out 2;
 }

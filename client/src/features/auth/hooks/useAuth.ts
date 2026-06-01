@@ -30,48 +30,66 @@ const log = createLogger('AUTH')
  * Subscribes to Supabase auth state changes and keeps the authStore
  * in sync. Must be called once in App.tsx — handles the full lifecycle:
  *
- *   SIGNED_IN  → ensure user exists in DB → fetch profile → setUser()
- *   SIGNED_OUT → cleanupOnSignOut()
- *   INITIAL_SESSION → same as SIGNED_IN (restores session on page refresh)
+ *   INITIAL_SESSION → first event on mount. Carries the session that
+ *                     Supabase resolved from localStorage OR from the
+ *                     URL hash on an OAuth redirect. Treated the same
+ *                     as SIGNED_IN.
+ *   SIGNED_IN       → explicit sign-in within the same page life (OTP
+ *                     verify, OAuth callback). Ensure user row → fetch
+ *                     profile → setUser().
+ *   SIGNED_OUT      → reset().
+ *   TOKEN_REFRESHED → SDK silently rotated the access token. No store
+ *                     change needed (user stays authed, profile is
+ *                     already loaded).
+ *
+ * The imperative `getSession()` path was removed because it returned
+ * before Supabase finished parsing the OAuth URL hash, racing against
+ * the listener and flipping `isAuthLoading` to false while the user
+ * was actually authed — AuthGuard then bounced them to /auth.
+ * Relying solely on the listener guarantees `isAuthLoading` only
+ * clears after the session is truly resolved.
  */
 export function useAuth(): void {
   const setUser = useAuthStore((s) => s.setUser)
+  const setAuthLoading = useAuthStore((s) => s.setAuthLoading)
   const reset = useAuthStore((s) => s.reset)
 
   useEffect(() => {
-    // Check for existing session on mount (page refresh)
-    const initializeAuth = async (): Promise<void> => {
-      const { data: { session } } = await supabase.auth.getSession()
-
-      if (session?.user) {
-        log.info('Existing session found, fetching profile')
-        await syncUserProfile(session.user.id, session.user.email ?? '', setUser)
-      }
-    }
-
-    initializeAuth()
-
-    // Listen for future auth state changes (login, logout, token refresh)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         log.debug('Auth state changed', { event })
 
-        if (event === 'SIGNED_IN' && session?.user) {
-          await syncUserProfile(session.user.id, session.user.email ?? '', setUser)
+        if (
+          (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') &&
+          session?.user
+        ) {
+          try {
+            await syncUserProfile(
+              session.user.id,
+              session.user.email ?? '',
+              setUser,
+            )
+          } catch (error) {
+            log.error('Failed to sync user profile', { error })
+          }
         }
 
         if (event === 'SIGNED_OUT') {
           log.info('User signed out')
           reset()
         }
+
+        // Release AuthGuard's hold only after the first event has been
+        // fully processed — by this point the store reflects the
+        // resolved session (or confirmed lack thereof).
+        setAuthLoading(false)
       },
     )
 
-    // Cleanup subscription on unmount
     return () => {
       subscription.unsubscribe()
     }
-  }, [setUser, reset])
+  }, [setUser, setAuthLoading, reset])
 }
 
 // ─── Helpers ───────────────────────────────────────────────────

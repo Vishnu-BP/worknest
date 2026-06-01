@@ -10,7 +10,7 @@
  * @related client/src/core/components/common/WorkspaceLayout.tsx
  */
 
-import { Folder, PanelLeftClose, PanelLeft, Settings } from 'lucide-react'
+import { Folder, PanelLeftClose, PanelLeft, Settings, Users } from 'lucide-react'
 import { NavLink, useParams } from 'react-router-dom'
 
 import { Button } from '@core/components/ui/button'
@@ -66,6 +66,24 @@ export function Sidebar(): JSX.Element {
 
       {/* ─── Bottom Actions ────────────────────────────── */}
       <div className="p-3 space-y-1">
+        {slug && (
+          <NavLink
+            to={ROUTES.WORKSPACE_MEMBERS(slug)}
+            className={({ isActive }) =>
+              cn(
+                'flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors',
+                isActive
+                  ? 'bg-surface-alt text-text'
+                  : 'text-text-muted hover:bg-surface-alt hover:text-text',
+                isSidebarCollapsed && 'justify-center px-2',
+              )
+            }
+          >
+            <Users className="h-4 w-4 shrink-0" />
+            {!isSidebarCollapsed && <span>Members</span>}
+          </NavLink>
+        )}
+
         {slug && (
           <NavLink
             to={ROUTES.WORKSPACE_SETTINGS(slug)}

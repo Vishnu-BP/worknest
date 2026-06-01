@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,6 +11,34 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
+    <!--
+      Apply the saved theme BEFORE React hydrates to prevent a flash of the
+      wrong palette. Reads localStorage.worknest_theme; falls back to the
+      system preference; otherwise keeps the default dark class above.
+    -->
+    <script>
+      (function () {
+        // Opt out of the browser's default scroll restoration before the
+        // first paint. Without this, a refresh anywhere on the landing
+        // page snaps the user back to their previous scroll position —
+        // which felt like a bug (e.g. landing on the kanban demo after
+        // a reload). React's client-side routing handles scroll explicitly.
+        try {
+          if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+        } catch (_) { /* no-op */ }
+
+        try {
+          var saved = localStorage.getItem('worknest_theme');
+          var preferLight =
+            !saved && window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = saved || (preferLight ? 'light' : 'dark');
+          document.documentElement.classList.remove('dark', 'light');
+          document.documentElement.classList.add(theme);
+        } catch (_) {
+          /* no-op — default dark class already applied */
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

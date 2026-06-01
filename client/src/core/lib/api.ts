@@ -62,15 +62,22 @@ async function request<T>(
     if (response.status === 401) {
       log.warn('Received 401, attempting token refresh')
 
-      const { error: refreshError } = await supabase.auth.refreshSession()
+      const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession()
 
-      if (refreshError) {
-        // Refresh failed — session is dead, redirect to login
-        log.error('Token refresh failed, signing out', { error: refreshError.message })
+      // Treat "no session returned" the same as an explicit error — Supabase
+      // can return { error: null, data: { session: null } } when the refresh
+      // token itself is revoked/expired. Without this check we'd retry with
+      // the same dead token and loop forever.
+      if (refreshError || !refreshData.session) {
+        log.error('Token refresh failed, signing out', {
+          error: refreshError?.message ?? 'no session returned',
+        })
         // Import dynamically to avoid circular dependency
         const { cleanupOnSignOut } = await import('./cleanup')
         await cleanupOnSignOut()
-        return undefined as T
+        // Throw so TanStack Query marks the query as errored cleanly.
+        // Returning undefined would crash downstream `select` callbacks.
+        throw new ApiError('Session expired', 401, errorBody)
       }
 
       // Refresh succeeded — retry the original request once

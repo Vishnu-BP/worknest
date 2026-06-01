@@ -16,6 +16,13 @@
 import { relations } from 'drizzle-orm'
 
 import { activityLog } from './activity-log.schema'
+import {
+  chatAttachments,
+  chatChannelMembers,
+  chatChannels,
+  chatMessages,
+  chatReactions,
+} from './chat.schema'
 import { comments } from './comments.schema'
 import { invitations } from './invitations.schema'
 import { labels } from './labels.schema'
@@ -177,5 +184,78 @@ export const activityLogRelations = relations(activityLog, ({ one }) => ({
   actor: one(users, {
     fields: [activityLog.actor_id],
     references: [users.id],
+  }),
+}))
+
+// ─── Chat Channels Relations ───────────────────────────────────
+
+export const chatChannelsRelations = relations(chatChannels, ({ one, many }) => ({
+  workspace: one(workspaces, {
+    fields: [chatChannels.workspace_id],
+    references: [workspaces.id],
+  }),
+  project: one(projects, {
+    fields: [chatChannels.project_id],
+    references: [projects.id],
+  }),
+  creator: one(users, {
+    fields: [chatChannels.created_by],
+    references: [users.id],
+  }),
+  members: many(chatChannelMembers),
+  messages: many(chatMessages),
+}))
+
+// ─── Chat Channel Members Relations ────────────────────────────
+
+export const chatChannelMembersRelations = relations(chatChannelMembers, ({ one }) => ({
+  channel: one(chatChannels, {
+    fields: [chatChannelMembers.channel_id],
+    references: [chatChannels.id],
+  }),
+  user: one(users, {
+    fields: [chatChannelMembers.user_id],
+    references: [users.id],
+  }),
+}))
+
+// ─── Chat Messages Relations ───────────────────────────────────
+
+export const chatMessagesRelations = relations(chatMessages, ({ one, many }) => ({
+  workspace: one(workspaces, {
+    fields: [chatMessages.workspace_id],
+    references: [workspaces.id],
+  }),
+  channel: one(chatChannels, {
+    fields: [chatMessages.channel_id],
+    references: [chatChannels.id],
+  }),
+  author: one(users, {
+    fields: [chatMessages.author_id],
+    references: [users.id],
+  }),
+  reactions: many(chatReactions),
+  attachments: many(chatAttachments),
+}))
+
+// ─── Chat Reactions Relations ──────────────────────────────────
+
+export const chatReactionsRelations = relations(chatReactions, ({ one }) => ({
+  message: one(chatMessages, {
+    fields: [chatReactions.message_id],
+    references: [chatMessages.id],
+  }),
+  user: one(users, {
+    fields: [chatReactions.user_id],
+    references: [users.id],
+  }),
+}))
+
+// ─── Chat Attachments Relations ────────────────────────────────
+
+export const chatAttachmentsRelations = relations(chatAttachments, ({ one }) => ({
+  message: one(chatMessages, {
+    fields: [chatAttachments.message_id],
+    references: [chatMessages.id],
   }),
 }))

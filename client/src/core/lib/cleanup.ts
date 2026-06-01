@@ -9,11 +9,10 @@
  *
  * Cleanup order:
  *   1. Reset all Zustand stores
- *   2. Clear TanStack Query cache
- *   3. Sign out from Supabase (clears tokens)
- *   4. Redirect to login
- *
- * Realtime channel unsubscription is added in Phase 11.
+ *   2. Unsubscribe from all Supabase Realtime channels
+ *   3. Clear TanStack Query cache
+ *   4. Sign out from Supabase (clears tokens)
+ *   5. Redirect to login
  *
  * @dependencies client/src/core/stores, client/src/core/lib/queryClient
  * @related CLAUDE.md — "Sign-Out Cleanup" section
@@ -33,12 +32,18 @@ export async function cleanupOnSignOut(): Promise<void> {
   useUIStore.getState().reset()
   useFilterStore.getState().reset()
 
-  // 2. Clear all cached server data
+  // 2. Unsubscribe from all Supabase Realtime channels
+  const channels = supabase.getChannels()
+  for (const channel of channels) {
+    await supabase.removeChannel(channel)
+  }
+
+  // 3. Clear all cached server data
   queryClient.clear()
 
-  // 3. Sign out from Supabase (clears access + refresh tokens)
+  // 4. Sign out from Supabase (clears access + refresh tokens)
   await supabase.auth.signOut()
 
-  // 4. Redirect to login page
-  window.location.href = ROUTES.LOGIN
+  // 5. Redirect to the auth page
+  window.location.href = ROUTES.AUTH
 }

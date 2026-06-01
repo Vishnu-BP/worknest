@@ -18,6 +18,7 @@ import { useState, useCallback } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 
 import { Skeleton } from '@core/components/ui/skeleton'
+import { RealtimeProvider } from '@core/components/common/RealtimeProvider'
 import { useAuthStore } from '@core/stores'
 
 import { useProject } from '../hooks/useProject'
@@ -87,37 +88,38 @@ export function ProjectBoard(): JSX.Element {
   // ─── Board ─────────────────────────────────────────────────
 
   return (
-    <div>
-      <BoardHeader
-        project={project}
-        isFiltersOpen={isFiltersOpen}
-        onToggleFilters={() => setIsFiltersOpen(!isFiltersOpen)}
-      />
-
-      {isFiltersOpen && <BoardFilters />}
-
-      <KanbanView
-        project={project}
-        slug={slug!}
-        onTaskClick={openTaskDetail}
-      />
-
-      {/* Task Detail Modal */}
-      {selectedTaskId && (
-        <TaskDetailModal
-          isOpen={!!selectedTaskId}
-          onClose={closeTaskDetail}
-          taskId={selectedTaskId}
-          slug={slug!}
-          projectId={projectId!}
-          projectKey={project.key}
-          labels={labels ?? []}
-          appliedLabelIds={appliedLabelIds}
-          userRole={userRole}
-          onAddLabel={(labelId) => addLabel.mutate(labelId)}
-          onRemoveLabel={(labelId) => removeLabel.mutate(labelId)}
+    <RealtimeProvider projectId={projectId!}>
+      <div>
+        <BoardHeader
+          isFiltersOpen={isFiltersOpen}
+          onToggleFilters={() => setIsFiltersOpen(!isFiltersOpen)}
         />
-      )}
-    </div>
+
+        {isFiltersOpen && <BoardFilters />}
+
+        <KanbanView
+          project={project}
+          slug={slug!}
+          onTaskClick={openTaskDetail}
+        />
+
+        {/* Task Detail Modal */}
+        {selectedTaskId && (
+          <TaskDetailModal
+            isOpen={!!selectedTaskId}
+            onClose={closeTaskDetail}
+            taskId={selectedTaskId}
+            slug={slug!}
+            projectId={projectId!}
+            projectKey={project.key}
+            labels={labels ?? []}
+            appliedLabelIds={appliedLabelIds}
+            userRole={userRole}
+            onAddLabel={(labelId) => addLabel.mutate(labelId)}
+            onRemoveLabel={(labelId) => removeLabel.mutate(labelId)}
+          />
+        )}
+      </div>
+    </RealtimeProvider>
   )
 }

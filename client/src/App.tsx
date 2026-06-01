@@ -3,7 +3,7 @@
  * @module client
  *
  * Defines the React Router route structure:
- *   - Public: /login, /signup (no auth)
+ *   - Public: /auth (no auth)
  *   - Protected:
  *     - / → redirect to last workspace or onboarding
  *     - /onboarding → create first workspace
@@ -33,7 +33,7 @@ import {
 import { Skeleton } from '@core/components/ui/skeleton'
 import { useUIStore } from '@core/stores'
 
-import { useAuth, Login, Signup } from '@features/auth'
+import { useAuth, Auth } from '@features/auth'
 import {
   Onboarding,
   WorkspaceDashboard,
@@ -42,8 +42,11 @@ import {
   useWorkspaces,
 } from '@features/workspace'
 import { Members } from '@features/member'
-import { ProjectBoard, CreateProjectDialog } from '@features/project'
+import { ProjectBoard, ProjectLayout, CreateProjectDialog } from '@features/project'
+import { ProjectChatPage } from '@features/chat'
 import { Activity } from '@features/activity'
+import { InviteAccept } from '@features/invitation'
+import { Contact, Landing } from '@features/landing'
 
 // ─── App ───────────────────────────────────────────────────────
 
@@ -54,8 +57,10 @@ export function App(): JSX.Element {
     <>
       <Routes>
         {/* ─── Public Routes ──────────────────────────── */}
-        <Route path={ROUTES.LOGIN} element={<Login />} />
-        <Route path={ROUTES.SIGNUP} element={<Signup />} />
+        <Route path={ROUTES.LANDING} element={<Landing />} />
+        <Route path={ROUTES.CONTACT} element={<Contact />} />
+        <Route path={ROUTES.AUTH} element={<Auth />} />
+        <Route path="/invite-accept" element={<InviteAccept />} />
 
         {/* ─── Protected Routes ───────────────────────── */}
         <Route
@@ -80,22 +85,27 @@ export function App(): JSX.Element {
 function ProtectedRoutes(): JSX.Element {
   return (
     <Routes>
-      {/* Home → redirect to last workspace or onboarding */}
-      <Route path="/" element={<HomeRedirect />} />
+      {/* Authed entry point → redirect to last workspace or onboarding */}
+      <Route path="app" element={<HomeRedirect />} />
 
       {/* Onboarding — create first workspace */}
-      <Route path={ROUTES.ONBOARDING} element={<Onboarding />} />
+      <Route path="onboarding" element={<Onboarding />} />
 
       {/* Workspace layout with nested child routes */}
-      <Route path="/w/:slug" element={<WorkspaceLayout />}>
+      <Route path="w/:slug" element={<WorkspaceLayout />}>
         <Route index element={<WorkspaceDashboard />} />
         <Route path="members" element={<Members />} />
         <Route path="settings" element={<WorkspaceSettingsPage />} />
-        <Route path="projects/:projectId/board" element={<ProjectBoard />} />
+        <Route path="projects/:projectId" element={<ProjectLayout />}>
+          <Route index element={<Navigate to="board" replace />} />
+          <Route path="board" element={<ProjectBoard />} />
+          <Route path="chat" element={<ProjectChatPage />} />
+          <Route path="chat/:channelId" element={<ProjectChatPage />} />
+        </Route>
         <Route path="activity" element={<Activity />} />
       </Route>
 
-      {/* Catch unmatched → home */}
+      {/* Catch unmatched authed path → send to /app (HomeRedirect) */}
       <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
     </Routes>
   )

@@ -3,17 +3,22 @@
  * @module client
  *
  * All colors, fonts, spacing, and border radii from docs/design-tokens.md
- * are defined here as CSS variable references. Dark theme is the default
- * and only theme — light theme is a future enhancement.
+ * are defined here as CSS variable references. Dark is the default theme
+ * but light is also supported — `darkMode: 'class'` keys Tailwind's
+ * `dark:` variants off `<html class="dark">`. The actual palette flip
+ * happens via CSS variable overrides in `index.css` (`:root.light`),
+ * so every `bg-background` / `text-text` class works in both modes
+ * without component-level changes.
  *
  * @dependencies tailwindcss
- * @related client/src/index.css — CSS variable definitions
+ * @related client/src/index.css — CSS variable definitions (dark + light)
  */
 
 import type { Config } from 'tailwindcss'
 import defaultTheme from 'tailwindcss/defaultTheme'
 
 const config: Config = {
+  darkMode: 'class',
   content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
     extend: {

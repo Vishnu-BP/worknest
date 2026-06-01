@@ -31,6 +31,8 @@ import type { Role } from '@worknest/shared'
  *   comment:read, comment:create, comment:update, comment:delete
  *   label:read, label:create, label:update, label:delete
  *   invitation:read, invitation:create, invitation:delete
+ *   channel:read, channel:create, channel:update, channel:delete
+ *   message:read, message:create, message:update, message:delete
  */
 const PERMISSIONS: Record<Role, Set<string>> = {
   owner: new Set([
@@ -41,6 +43,8 @@ const PERMISSIONS: Record<Role, Set<string>> = {
     'comment:read', 'comment:create', 'comment:update', 'comment:delete',
     'label:read', 'label:create', 'label:update', 'label:delete',
     'invitation:read', 'invitation:create', 'invitation:delete',
+    'channel:read', 'channel:create', 'channel:update', 'channel:delete',
+    'message:read', 'message:create', 'message:update', 'message:delete',
   ]),
 
   admin: new Set([
@@ -51,6 +55,8 @@ const PERMISSIONS: Record<Role, Set<string>> = {
     'comment:read', 'comment:create', 'comment:update', 'comment:delete',
     'label:read', 'label:create', 'label:update', 'label:delete',
     'invitation:read', 'invitation:create', 'invitation:delete',
+    'channel:read', 'channel:create', 'channel:update', 'channel:delete',
+    'message:read', 'message:create', 'message:update', 'message:delete',
   ]),
 
   member: new Set([
@@ -60,6 +66,8 @@ const PERMISSIONS: Record<Role, Set<string>> = {
     'task:read', 'task:create', 'task:update',
     'comment:read', 'comment:create', 'comment:update',
     'label:read', 'label:create',
+    'channel:read', 'channel:create', 'channel:update',
+    'message:read', 'message:create', 'message:update', 'message:delete',
   ]),
 
   viewer: new Set([
@@ -69,6 +77,8 @@ const PERMISSIONS: Record<Role, Set<string>> = {
     'task:read',
     'comment:read',
     'label:read',
+    'channel:read',
+    'message:read',
   ]),
 }
 

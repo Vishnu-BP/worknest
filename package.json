@@ -10,5 +10,12 @@
   ],
   "engines": {
     "node": ">=20.0.0"
+  },
+  "scripts": {
+    "capture:landing": "tsx scripts/capture-landing.ts",
+    "capture:ref": "tsx scripts/capture-ref.ts"
+  },
+  "devDependencies": {
+    "playwright": "^1.59.1"
   }
 }
